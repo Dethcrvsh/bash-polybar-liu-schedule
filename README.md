@@ -32,3 +32,6 @@ To change the format, simply modify the string echoed at the end of the script
 ```bash
 echo "$time | $begin-$end | $course | $teaching_type | $location"
 ```
+
+### Known Bugs
+- Unwanted characters are shown if more than one location is scheduled.
