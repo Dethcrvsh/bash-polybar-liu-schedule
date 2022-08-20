@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# The schedules which will be used by the script. Add .ics links here
+# The schedules which will be used by the script.
 SCHEDULES=(
-    "https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5536354Z1y6Z06.ics" #TDAB01
-    "https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5546354Z1y6Z06.ics" #TDDD92
+    # .ics link
+    # .ics link
 ) 
 
 SCHEDULE_TIMEZONE="UTC"
