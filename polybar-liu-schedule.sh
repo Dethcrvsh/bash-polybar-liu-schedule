@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# The schedules which will be used by the script. Add .ics links here
 SCHEDULES=(
     "https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5536354Z1y6Z06.ics" #TDAB01
     "https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5546354Z1y6Z06.ics" #TDDD92
@@ -119,3 +120,4 @@ fi
 
 # Echo the information that will be caught by Polybar. Modify this string to customize the bar output
 echo "$time | $begin-$end | $course | $teaching_type | $location"
+
