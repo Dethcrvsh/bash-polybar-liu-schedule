@@ -2,8 +2,7 @@
 
 # The schedules which will be used by the script.
 SCHEDULES=(
-    # .ics link
-    # .ics link
+    "https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5866309Z7y6Z06.ics"
 ) 
 
 SCHEDULE_TIMEZONE="UTC"
@@ -11,15 +10,13 @@ WEEK_IN_SECONDS=604800
 
 event=()
 
-
 # Return the index of the ':' character, which separates the key from the value
 get_separator_index () {
     search=":"
-	rest=${1#*$search}
+    rest=${1#*$search}
 
-	echo $((${#1} - ${#rest}))
+    echo $((${#1} - ${#rest}))
 }
-
 
 get_key () {
 	index=$(get_separator_index $1)
@@ -27,38 +24,33 @@ get_key () {
 	(( $index > 0 )) && echo ${1::$(($index - 1))}
 }
 
-
 get_value () {
-	index=$(get_separator_index $1)
+    index=$(get_separator_index $1)
 
-	(( $index > 0 )) && echo ${1:$(($index))}
+    (( $index > 0 )) && echo ${1:$(($index))}
 }
-
 
 # Parse a time into a format which is convertable by date
 # There is probably a better way to do this, but it works
 parse_time () {
-	echo "${1::4}-${1:4:2}-${1:6:2} ${1:9:2}:${1:11:2} $SCHEDULE_TIMEZONE"
+    echo "${1::4}-${1:4:2}-${1:6:2} ${1:9:2}:${1:11:2} $SCHEDULE_TIMEZONE"
 }
-
 
 # Return the hour and minute from a parsed time
 get_hour_min () {
-	echo $(date -d "$1" "+%H:%M")
+    echo $(date -d "$1" "+%H:%M")
 }
-
 
 # Return the date from a parsed time
 get_date () {
-	echo $(date -d "$1" "+%Y-%m-%d")
+    echo $(date -d "$1" "+%Y-%m-%d")
 }
-
 
 # Return the weekday from a parsed time
 get_weekday () {
-    echo $(date -d "$1" "+%a")
+    day=$(date -d "$1" "+%a")
+    echo ${day^}
 }
-
 
 # Loop through the different schedules and save the earliest event
 get_earliest_event () {
@@ -91,7 +83,6 @@ get_earliest_event () {
     done
 }
 
-
 get_earliest_event
 
 # If the event is empty, exit and indicate an error
@@ -104,8 +95,6 @@ begin=$(get_hour_min "$start_time")
 end=$(get_hour_min "$end_time")
 date=$(get_date "$start_time")
 day=$(get_weekday "$start_time")
-# Make the first letter uppercase
-day=${day^}
 course=${event[2]}
 teaching_type=${event[3]}
 location=${event[4]}
