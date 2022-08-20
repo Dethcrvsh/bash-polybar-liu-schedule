@@ -1,6 +1,10 @@
 #!/bin/bash
 
-SCHEDULE="https://cloud.timeedit.net/liu/web/schema/ri667XQ6637Z52Qm8Z0306Z6y7YQ600n6Y95Y6gQ60.ics"
+SCHEDULES=(
+		"https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5536354Z1y6Z06.ics" #TDAB01
+		"https://cloud.timeedit.net/liu/web/schema/ri697QQQY62Zn4Q5546354Z1y6Z06.ics" #TDDD92
+) 
+
 SCHEDULE_TIMEZONE="UTC"
 
 event=()
@@ -47,27 +51,41 @@ get_date () {
 		echo $(date -d "$1" "+%Y-%m-%d")
 }
 
+# Loop through the different schedules and save the earliest event
+get_earliest_event () {
+		for schedule in "${SCHEDULES[@]}"
+		do
+				last_key=""
+				last_event=()
 
-last_key=""
+				for line in $(curl -s $schedule)
+				do
+						line=${line%$'\r'} # Remove DOS newlines
+						
+						key=$(get_key $line)
+						value=$(get_value $line)
 
-for line in $(curl -s $SCHEDULE)
-do
-		line=${line%$'\r'} # Remove DOS newlines
-		
-		key=$(get_key $line)
-		value=$(get_value $line)
-		
-		# Filter out the wanted fields
-		[[ $key == "DTSTART" || $key == "DTEND" ]] && event+=($value)
-		[[ $key == "SUMMARY" ]] && event+=(${value::6})
-		[[ $last_key == "SUMMARY" ]] && event+=(${line::2})
-		[[ $last_key == "LOCATION" ]] && event+=($line)
+						# Filter out the wanted fields
+						[[ $key == "DTSTART" || $key == "DTEND" ]] && last_event+=($value)
+						[[ $key == "SUMMARY" ]] && last_event+=(${value::6})
+						[[ $last_key == "SUMMARY" ]] && last_event+=(${line::2})
+						[[ $last_key == "LOCATION" ]] && last_event+=($line)
 
-		# Break when the end of the first event is reached
-		[[ $line == "END:VEVENT" ]] && break
+						# Break when the end of the first event is reached
+						[[ $line == "END:VEVENT" ]] && break
 
-		last_key=$key
-done
+						last_key=$key
+				done
+
+				# Set the event if it is currently empty, or the new one starts earlier
+				if [[ (("${#event[@]}" == 0)) || (("${last_event[0]}" < "${event[0]}")) ]] 
+				then
+						event=(${last_event[@]})
+				fi
+		done
+}
+
+get_earliest_event
 
 # If the event is empty, exit and indicate an error
 (( ${#event[@]} == 0 )) && exit 1
