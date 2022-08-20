@@ -21,8 +21,8 @@ interval = 900
 To add schedules, modify the SCHEDULES-variable in the script.
 ```bash
 SCHEDULES=(
-    https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5861309Z7y6Z06.ics
-    https://cloud.timeedit.net/liu/web/schema/ria675QQY63Zn3Q5861309Z7y6Z06.ics
+    "https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5861309Z7y6Z06.ics"
+    "https://cloud.timeedit.net/liu/web/schema/ria675QQY63Zn3Q5861309Z7y6Z06.ics"
 )
 ```
 To change the format, simply modify the string echoed at the end of the script
