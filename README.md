@@ -8,8 +8,6 @@ If the next event is scheduled more than a week in advance, the date will be sho
 - Curl
 - Date
 
-(I would be astonished if you don't have these)
-
 ### Settings
 #### Polybar
 ```ini 
@@ -27,11 +25,15 @@ SCHEDULES=(
     "https://cloud.timeedit.net/liu/web/schema/ria675QQY63Zn3Q5861309Z7y6Z06.ics"
 )
 ```
-To change the format, simply modify the string echoed at the end of the script
+To change the format, simply modify the string echoed at the end of the script.
 
 ```bash
 echo "$time | $begin-$end | $course | $teaching_type | $location"
 ```
 
 ### Known Bugs
-- Unwanted characters are shown if more than one location is scheduled.
+- ~~Unwanted characters are shown if more than one location is scheduled.~~
+- If more than one location is scheduled, only the first will be shown.
+
+### Work in Progress
+- Giving the module a minimal-mode which can be expanded by clicking on it.
