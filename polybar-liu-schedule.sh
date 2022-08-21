@@ -2,7 +2,8 @@
 
 # The schedules which will be used by the script.
 SCHEDULES=(
-    "https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5866309Z7y6Z06.ics"
+    #.ics link
+    #.ics link
 ) 
 
 SCHEDULE_TIMEZONE="UTC"
@@ -19,9 +20,9 @@ get_separator_index () {
 }
 
 get_key () {
-	index=$(get_separator_index $1)
+    index=$(get_separator_index $1)
 
-	(( $index > 0 )) && echo ${1::$(($index - 1))}
+    (( $index > 0 )) && echo ${1::$(($index - 1))}
 }
 
 get_value () {
@@ -52,6 +53,10 @@ get_weekday () {
     echo ${day^}
 }
 
+strip_backslash () {
+    echo ${1//\\/}
+}
+
 # Loop through the different schedules and save the earliest event
 get_earliest_event () {
     for schedule in "${SCHEDULES[@]}"
@@ -62,15 +67,15 @@ get_earliest_event () {
         for line in $(curl -s $schedule)
         do
             line=${line%$'\r'} # Remove DOS newlines
-            
+
             key=$(get_key $line)
             value=$(get_value $line)
 
             # Filter out the wanted fields
             [[ $key == "DTSTART" || $key == "DTEND" ]] && last_event+=($value)
             [[ $key == "SUMMARY" ]] && last_event+=(${value::6})
-            [[ $last_key == "SUMMARY" ]] && last_event+=(${line::2})
-            [[ $last_key == "LOCATION" ]] && last_event+=($line)
+			# Strip the last comma to allow for greater variability
+            [[ $last_key == "SUMMARY" || $last_key == "LOCATION" ]] && last_event+=(${line%","})
 
             # Break when the end of the first event is reached
             [[ $line == "END:VEVENT" ]] && break
@@ -78,7 +83,7 @@ get_earliest_event () {
             last_key=$key
         done
 
-        # Set the event if it is currently empty, or the new one starts earlier
+        # Set the event if it is currently empty or if the new one starts earlier
         [[ (("${#event[@]}" == 0)) || (("${last_event[0]}" < "${event[0]}")) ]] && event=(${last_event[@]})
     done
 }
@@ -96,8 +101,8 @@ end=$(get_hour_min "$end_time")
 date=$(get_date "$start_time")
 day=$(get_weekday "$start_time")
 course=${event[2]}
-teaching_type=${event[3]}
-location=${event[4]}
+teaching_type=$(strip_backslash ${event[3]})
+location=$(strip_backslash ${event[4]})
 
 # Echo the day if time remaining is less than a week, otherwise the date
 if  (( $(date -d "$start_time" "+%s") - $(date "+%s") < $WEEK_IN_SECONDS ))
