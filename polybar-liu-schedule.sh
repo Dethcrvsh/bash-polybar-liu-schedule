@@ -2,6 +2,7 @@
 
 # The schedules which will be used by the script.
 SCHEDULES=(
+    "https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5866309Z7y6Z06.ics"
     #.ics link
     #.ics link
 ) 
@@ -57,6 +58,15 @@ strip_backslash () {
     echo ${1//\\/}
 }
 
+get_current_unix () {
+    echo $(date "+%s")
+}
+
+get_unix_from_time () {
+    echo $(date -d "$1" "+%s")
+}
+
+
 # Loop through the different schedules and save the earliest event
 get_earliest_event () {
     for schedule in "${SCHEDULES[@]}"
@@ -77,14 +87,27 @@ get_earliest_event () {
 			# Strip the last comma to allow for greater variability
             [[ $last_key == "SUMMARY" || $last_key == "LOCATION" ]] && last_event+=(${line%","})
 
-            # Break when the end of the first event is reached
-            [[ $line == "END:VEVENT" ]] && break
+            # Do checks when the end of the event has been reached
+            if [[ $line == "END:VEVENT" ]]
+            then
+                event_time=$(parse_time ${last_event[0]})
+                event_unix=$(get_unix_from_time "$event_time")
+                current_unix=$(get_current_unix)
+
+                # If the event has not passed, break
+                (( $event_unix > $current_unix )) && break
+
+                # Otherwise, reset the event and check the next one
+                last_event=()
+            fi
 
             last_key=$key
         done
 
         # Set the event if it is currently empty or if the new one starts earlier
-        [[ (("${#event[@]}" == 0)) || (("${last_event[0]}" < "${event[0]}")) ]] && event=(${last_event[@]})
+        [[ (("${#event[@]}" == 0)) || 
+            (("${last_event[0]}" < "${event[0]}")) 
+        ]] && event=(${last_event[@]})
     done
 }
 
