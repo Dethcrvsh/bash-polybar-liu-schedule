@@ -2,7 +2,6 @@
 
 # The schedules which will be used by the script.
 SCHEDULES=(
-    "https://cloud.timeedit.net/liu/web/schema/ri667QQQY63Zn3Q5866309Z7y6Z06.ics"
     #.ics link
     #.ics link
 ) 
