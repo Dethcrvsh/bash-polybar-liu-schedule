@@ -89,7 +89,7 @@ get_earliest_event () {
             # Do checks when the end of the event has been reached
             if [[ $line == "END:VEVENT" ]]
             then
-                event_time=$(parse_time ${last_event[0]})
+                event_time=$(parse_time ${last_event[1]})
                 event_unix=$(get_unix_from_time "$event_time")
                 current_unix=$(get_current_unix)
 
