@@ -2,8 +2,8 @@
 
 # The schedules which will be used by the script.
 SCHEDULES=(
-    #.ics link
-    #.ics link
+	"https://cloud.timeedit.net/liu/web/schema/ri667XQ7577Z55Qm6Z0756Z6y2YQ700n6Y43Y0gQ50.ics",
+    "https://cloud.timeedit.net/liu/web/schema/ri607QQQY76Zn7Q5238554Z2y6Z06.ics"
 ) 
 
 SCHEDULE_TIMEZONE="UTC"
@@ -125,6 +125,9 @@ day=$(get_weekday "$start_time")
 course=${event[2]}
 teaching_type=$(strip_backslash ${event[3]})
 location=$(strip_backslash ${event[4]})
+
+# Check if there should be no location and reset it if its the case
+[[ "${location::11}" == "DESCRIPTION" ]] && location="- "
 
 # Echo the day if time remaining is less than a week, otherwise the date
 if  (( $(date -d "$start_time" "+%s") - $(date "+%s") < $WEEK_IN_SECONDS ))
