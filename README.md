@@ -1,4 +1,6 @@
 # polybar-liu-schedule
+**!! DEPRECATED, USE ![Liusch](https://github.com/Dethcrvsh/liusch) INSTEAD!!**
+
 This is a simple module which shows the next event and course scheduled at LIU. It supports the merging of several schedules to allow for high customizability.
 If the next event is scheduled more than a week in advance, the date will be shown instead of the weekday. 
 
